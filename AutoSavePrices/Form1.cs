@@ -68,9 +68,9 @@ namespace AutoSavePrices
                         break;
                     }
                 }
-
             }
-            
+
+            GC.Collect();
 
 
         }

@@ -41,10 +41,14 @@ namespace AutoSavePrices
                         UniLogger.WriteLog($"Экспорт прайсов клиенту {client.idKontr} успешно завершен за ", 0, elapsedTime(startTime));
                     startTime.Start();
 
-
+                    var sme = new SendMailExecutor();
                     // Добавление пути к файлу
-                    bool isSended = SendMailExecutor.StartSendMails(ConfExp.GetFullPath(nameFile), client.idKontr);
+                    bool isSended = sme.StartSendMails(ConfExp.GetFullPath(nameFile), client.idKontr);
 
+                    if(isSended)
+                    {
+                        UniLogger.WriteLog($"Началась отправка прайсов клиенту {client.idKontr} ", 0, "");
+                    }
                 }
                 catch (Exception ex)
                 {

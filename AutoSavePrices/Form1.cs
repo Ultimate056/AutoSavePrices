@@ -19,7 +19,6 @@ namespace AutoSavePrices
             InitializeComponent();
         }
 
-
         public void Start()
         {
             // Первые клиенты

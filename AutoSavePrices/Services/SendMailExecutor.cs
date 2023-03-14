@@ -27,7 +27,8 @@ namespace AutoSavePrices.Services
             smtp.Host = "mail.arkona36.ru";
             smtp.Port = 587;
             smtp.Credentials = new NetworkCredential(from.ToString(), password);
-            smtp.EnableSsl = false;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls | SecurityProtocolType.Ssl3;
+            smtp.EnableSsl = true;
         }
 
 
@@ -42,10 +43,10 @@ namespace AutoSavePrices.Services
                 MailMessage m = new MailMessage(from, to);
 
                 m.Subject = $"Лист прайсов для {idClient}";
-                
-                //Attachment att = new Attachment(path);
-               
-                //m.Attachments.Add(att);
+
+                Attachment att = new Attachment(path);
+
+                m.Attachments.Add(att);
                 m.Body = $"Лист прайсов для вас, уважаемый {idClient}";
 
                 smtp.SendMailAsync(m);

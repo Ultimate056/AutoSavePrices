@@ -5,7 +5,7 @@ namespace AutoSavePrices
     {
         public decimal idKontr { get; set; }
 
-        public decimal idKategory { get; set; }
+        public int? idKategory { get; set; }
 
 
         public decimal idDirect { get; set; }

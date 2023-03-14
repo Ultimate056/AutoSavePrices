@@ -30,25 +30,23 @@ namespace AutoSavePrices
                     
                     var exp = new ExportToExcel(dt);
 
-                    Random rand = new Random();
-
-                    string nameFile = client.idKontr + " - " + client.idKategory + " - " + rand.Next();
+                    string nameFile = client.idKontr + " - " + client.idKategory;
 
                     bool isExported = exp.StartExport(nameFile);
 
                     startTime.Stop();
                     if(isExported)
                         UniLogger.WriteLog($"Экспорт прайсов клиенту {client.idKontr} успешно завершен за ", 0, elapsedTime(startTime));
-                    startTime.Start();
+                    //startTime.Start();
 
-                    var sme = new SendMailExecutor();
-                    // Добавление пути к файлу
-                    bool isSended = sme.StartSendMails(ConfExp.GetFullPath(nameFile), client.idKontr);
+                    //var sme = new SendMailExecutor();
 
-                    if(isSended)
-                    {
-                        UniLogger.WriteLog($"Началась отправка прайсов клиенту {client.idKontr} ", 0, "");
-                    }
+                    //bool isSended = sme.StartSendMails(ConfExp.GetFullPath(nameFile), client.idKontr);
+
+                    //if(isSended)
+                    //{
+                    //    UniLogger.WriteLog($"Началась отправка прайсов клиенту {client.idKontr} ", 0, "");
+                    //}
                 }
                 catch (Exception ex)
                 {

@@ -11,6 +11,8 @@ namespace AutoSavePrices
     public static class DBExecutor
     {
         private const string stringConnection = "Data Source = DBSRV\\DBSRV; Initial Catalog = TEST; Integrated Security = True";
+
+
         public static DataTable getDataTable(Client client)
         {
             try
@@ -22,7 +24,6 @@ namespace AutoSavePrices
                 SqlDataAdapter da = new SqlDataAdapter(GeneratorPricesDB.sqlGeneratePrices, connection);
                 AddParameters(da.SelectCommand, GeneratorPricesDB.Convert(client));
                 da.Fill(Ds);
-
                 da.Dispose();
                 connection.Close();
                 return Ds.Tables[0];

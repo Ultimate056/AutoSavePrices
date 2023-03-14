@@ -1,5 +1,7 @@
-﻿using System;
+﻿using AutoSavePrices.Models;
+using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -20,57 +22,25 @@ namespace AutoSavePrices
 
             QAllClients allClients = new QAllClients(4);
 
-
-            allClients.Add(new Client
+            using (ApplicationDbContext db = new ApplicationDbContext())
             {
-                idKontr = 554890,
-                idKategory = 21,
-                idDirect = 60,
-                idCur = 0,
-                inPrice = 1,
-                idTerritory = 1,
-                fnotWithoutGTD = 0
-            });
-            allClients.Add(new Client
-            {
-                idKontr = 549460,
-                idKategory = 31,
-                idDirect = 60,
-                idCur = 0,
-                inPrice = 1,
-                idTerritory = 1,
-                fnotWithoutGTD = 0
-            });
-            allClients.Add(new Client
-            {
-                idKontr = 553592,
-                idKategory = 4,
-                idDirect = 60,
-                idCur = 0,
-                inPrice = 1,
-                idTerritory = 1,
-                fnotWithoutGTD = 0
-            });
-            allClients.Add(new Client
-            {
-                idKontr = 548913,
-                idKategory = 20,
-                idDirect = 60,
-                idCur = 0,
-                inPrice = 1,
-                idTerritory = 1,
-                fnotWithoutGTD = 0
-            });
-            allClients.Add(new Client
-            {
-                idKontr = 548966,
-                idKategory = 20,
-                idDirect = 60,
-                idCur = 0,
-                inPrice = 1,
-                idTerritory = 1,
-                fnotWithoutGTD = 0
-            });
+                //string sql = @"SELECT * FROM uf_getClientsPrices (@id_u)";
+                //SqlParameter par = new SqlParameter("@id_u", id_agent);
+                //var list = db.Database.SqlQuery<Client>(sql).ToList();
+                var list = db.a_kontrs.Where(x=> x.category == 21).Take(100).Select(x => new Client
+                {
+                    idKontr = x.id_kontr,
+                    idKategory = x.category,
+                    idDirect = 60,
+                    idCur = 0,
+                    inPrice = 1,
+                    idTerritory = 1
+                }).ToList();
+                foreach(var item in list)
+                {
+                    allClients.Add(item);
+                }
+            }
             
             Application.Run(new Form1(allClients));
         }

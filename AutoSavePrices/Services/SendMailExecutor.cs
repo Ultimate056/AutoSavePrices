@@ -38,16 +38,17 @@ namespace AutoSavePrices.Services
                 smtp = new SmtpClient();
                 InitializeSmtpConf();
 
-
                 MailAddress to = new MailAddress(mailTo);
                 MailMessage m = new MailMessage(from, to);
 
                 m.Subject = $"Лист прайсов для {idClient}";
-                Attachment att = new Attachment(path);
-                m.Attachments.Add(att);
+                
+                //Attachment att = new Attachment(path);
+               
+                //m.Attachments.Add(att);
                 m.Body = $"Лист прайсов для вас, уважаемый {idClient}";
 
-                smtp.Send(m);
+                smtp.SendMailAsync(m);
 
                 m.Dispose();
 

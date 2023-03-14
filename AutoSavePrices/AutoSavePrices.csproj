@@ -78,9 +78,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configurations\ConfExp.cs" />
     <Compile Include="Entities\Client.cs" />
     <Compile Include="Configurations\ConfigurationExport.cs" />
-    <Compile Include="Helpers\MailSMTPSend.cs" />
     <Compile Include="Services\DBExecutor.cs" />
     <Compile Include="Services\ExportToExcel.cs" />
     <Compile Include="Helpers\GeneratorPricesDB.cs" />
@@ -122,6 +122,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

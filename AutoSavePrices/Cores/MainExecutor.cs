@@ -1,4 +1,6 @@
-﻿using System;
+﻿using AutoSavePrices.Configurations;
+using AutoSavePrices.Services;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -37,8 +39,12 @@ namespace AutoSavePrices
                     startTime.Stop();
                     if(isExported)
                         UniLogger.WriteLog($"Экспорт прайсов клиенту {client.idKontr} успешно завершен за ", 0, elapsedTime(startTime));
+                    startTime.Start();
+
 
                     // Добавление пути к файлу
+                    bool isSended = SendMailExecutor.StartSendMails(ConfExp.GetFullPath(nameFile), client.idKontr);
+
                 }
                 catch (Exception ex)
                 {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoSavePrices.Models;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,13 +12,15 @@ namespace AutoSavePrices.Configurations
     {
 
 
-        private static readonly string path = Directory.GetCurrentDirectory() + @"\generated" + @"\";
+        private static readonly string main_path = @"C:\FalconTemp";
 
         private static readonly string extFormat = ".xlsx";
 
-        public static string GetFullPath(string NameFile)
+        public static string GetFullPath(RoutePrice p)
         {
-            return path + NameFile + extFormat;
+            p.PathDirectory = main_path + @"\" + p.Category + @"\" + p.IdClient;
+            Directory.CreateDirectory(p.PathDirectory);
+            return main_path + @"\" + p.Category + @"\" + p.IdClient + @"\" + p.NameFile + extFormat;
         }
 
 

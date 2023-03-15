@@ -16,12 +16,9 @@ namespace AutoSavePrices
 
         public decimal inPrice { get; set; }
 
-
         public decimal idTerritory { get; set; }
 
-
         public decimal fnotWithoutGTD { get; set; }
-
 
         public string ListId_TopLevel { get; set; } = "";
         public string Listid_tov_line { get; set; } = "";

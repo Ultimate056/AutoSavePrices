@@ -27,7 +27,6 @@ namespace AutoSavePrices
             // Запускаем первые 4 потока на формирование
             MainExecutor ex = new MainExecutor();
             ex.Start(topClients);
-            comboBox1.Items.AddRange(topClients.Select(x => x.idKontr.ToString()).ToArray());
             // В главном потоке отслеживаем состояния потоков
             while(true)
             {
@@ -45,7 +44,6 @@ namespace AutoSavePrices
                                 var nextClient = needClients.Next();
                                 ex.GenerateTask(nextClient);
                                 i = 0;
-                                comboBox1.Items.Add(nextClient.idKontr.ToString());
                             }
 
                         }

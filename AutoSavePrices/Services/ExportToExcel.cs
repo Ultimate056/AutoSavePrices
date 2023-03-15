@@ -1,4 +1,5 @@
 ﻿using AutoSavePrices.Configurations;
+using AutoSavePrices.Models;
 using DevExpress.Export.Xl;
 using DevExpress.XtraReports.ReportGeneration;
 using DevExpress.XtraReports.UI;
@@ -17,14 +18,21 @@ namespace AutoSavePrices
             dataTable = dt;
         }
 
-        public bool StartExport(string NameFile)
+        public bool StartExport(RoutePrice path_price)
         {
             try
             {
+                if (dataTable.Rows.Count < 1)
+                {
+                    throw new Exception("Нет прайсов для отправки");
+                }
+
                 // Create an exporter instance.
                 IXlExporter exporter = XlExport.CreateExporter(XlDocumentFormat.Xlsx);
 
-                var path = ConfExp.GetFullPath(NameFile);
+                var path = path_price.FullPath;
+
+                // Проверка есть ли файл с таким названием
 
                 using (FileStream stream = new FileStream(path, FileMode.Create, FileAccess.ReadWrite))
                 {
@@ -123,42 +131,12 @@ namespace AutoSavePrices
             }
             catch (Exception ex)
             {
-                UniLogger.WriteLog("Экспорт DataTable в xlsx", 1, ex.Message);
+                UniLogger.WriteLog($"Экспорт DataTable в xlsx. Клиент {path_price.IdClient}", 1, ex.Message);
                 return false;
             }
 
         }
-
-        //public bool StartExportPrev(string NameFile)
-        //{
-        //    try
-        //    {
-        //        var gv = ConfigurationExport.CommonGridView;
-        //        var ropt = ConfigurationExport.CommonReportOptions;
-        //        var xlsxopt = ConfigurationExport.XlsxOpt;
-        //        var path = ConfigurationExport.XlsxExportPath;
-
-        //        XtraReport report = ReportGenerator.GenerateReport(gv, ropt);
-        //        report.DataSource = dataTable;
-        //        report.ExportToXlsx(path + NameFile + ".xlsx", xlsxopt);
-
-        //        report.Dispose();
-        //        dataTable.Dispose();
-        //        GC.Collect();
-
-        //        return true;
-        //    }
-        //    catch(Exception ex)
-        //    {
-        //        UniLogger.WriteLog("Экспорт DataTable в xlsx", 1, ex.Message);
-        //        return false;
-        //    }
-
-        //}
-
-    }
-
-    
+    } 
 }
 
 

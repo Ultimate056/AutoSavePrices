@@ -1,4 +1,5 @@
 ﻿using AutoSavePrices.Configurations;
+using AutoSavePrices.Models;
 using AutoSavePrices.Services;
 using System;
 using System.Collections.Generic;
@@ -23,30 +24,40 @@ namespace AutoSavePrices
             {
                 try
                 {
-                    
+                    // Настройка путей для файла
+                    RoutePrice route = new RoutePrice()
+                    {
+                        IdClient = client.idKontr.ToString(),
+                        Category = client.idKategory.ToString(),
+                        NameFile = "avtoprices"
+                    };
+                    route.FullPath = ConfExp.GetFullPath(route);
+
+
                     Stopwatch startTime = Stopwatch.StartNew();
 
+                    // Получаем данные
                     DataTable dt = DBExecutor.getDataTable(client);
-                    
+             
+                    // Экспортируем в Excel
                     var exp = new ExportToExcel(dt);
-
-                    string nameFile = client.idKontr + " - " + client.idKategory;
-
-                    bool isExported = exp.StartExport(nameFile);
-
+                    bool isExported = exp.StartExport(route);
                     startTime.Stop();
                     if(isExported)
                         UniLogger.WriteLog($"Экспорт прайсов клиенту {client.idKontr} успешно завершен за ", 0, elapsedTime(startTime));
-                    //startTime.Start();
+                    else
+                        throw new Exception($"Ошибка при экспорте файла. Клиент {client.idKontr}. Категория {client.idKategory}");
 
-                    //var sme = new SendMailExecutor();
+                    // Отправка email
+                    startTime.Start();
+                    var sme = new SendMailExecutor();
+                    bool isSended =  sme.SendEmailAsync(route);
 
-                    //bool isSended = sme.StartSendMails(ConfExp.GetFullPath(nameFile), client.idKontr);
-
-                    //if(isSended)
-                    //{
-                    //    UniLogger.WriteLog($"Началась отправка прайсов клиенту {client.idKontr} ", 0, "");
-                    //}
+                    startTime.Stop();
+                    if (isSended)
+                        UniLogger.WriteLog($"Отправились прайсы  {client.idKontr} за ", 0, elapsedTime(startTime));
+                    else
+                        throw new Exception($"Не Отправились прайсы  {client.idKontr}");
                 }
                 catch (Exception ex)
                 {
@@ -65,7 +76,7 @@ namespace AutoSavePrices
             foreach(var client in firstClients)
             {
                 GenerateTask(client);
-                Thread.Sleep(200);
+                Thread.Sleep(300);
             }
         }
 

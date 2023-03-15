@@ -1,67 +1,62 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
+using MimeKit;
+using MailKit.Net.Smtp;
+using AutoSavePrices.Models;
+using System.IO;
 
 namespace AutoSavePrices.Services
 {
     public class SendMailExecutor
     {
-        private readonly MailAddress from = new MailAddress("Supplier@arkona36.ru");
+        private readonly string from = "Supplier@arkona36.ru";
         private readonly string password = "sppu54ffk)";
 
-        private const string mailToMy = "kopylov36@arkona.ru";
-
-        private SmtpClient smtp;
+        private const string mailToMy = "kopylovvu@arkona36.ru";
 
         public SendMailExecutor()
         {
             
         }
 
-        public void InitializeSmtpConf()
-        {
-            smtp.Host = "mail.arkona36.ru";
-            smtp.Port = 587;
-            smtp.Credentials = new NetworkCredential(from.ToString(), password);
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls | SecurityProtocolType.Ssl3;
-            smtp.EnableSsl = true;
-        }
 
-
-        public bool StartSendMails(string path, decimal idClient, string mailTo = mailToMy)
+        public bool SendEmailAsync(RoutePrice path_price, string MailTo = mailToMy)
         {
+            MimeMessage emailMessage = new MimeMessage();
+
+            emailMessage.From.Add(new MailboxAddress("Компания Аркона", from));
+            emailMessage.To.Add(new MailboxAddress("", MailTo));
+            emailMessage.Subject = "Прайс листов";
+            var builder = new BodyBuilder();
+            builder.HtmlBody = $"<h2 style='color: green'>Вам для категории {path_price.Category} ? </h2></br>" +
+                $"Держите прайсы, уважаемый {path_price.IdClient} клиент";
+
+            builder.Attachments.Add(path_price.FullPath);
+            emailMessage.Body = builder.ToMessageBody();
+
             try
             {
-                smtp = new SmtpClient();
-                InitializeSmtpConf();
+                using (var client = new SmtpClient())
+                {
+                    client.Connect("mail.arkona36.ru", 587, false);
+                    client.Authenticate(from, password);
+                    client.Send(emailMessage);
 
-                MailAddress to = new MailAddress(mailTo);
-                MailMessage m = new MailMessage(from, to);
-
-                m.Subject = $"Лист прайсов для {idClient}";
-
-                Attachment att = new Attachment(path);
-
-                m.Attachments.Add(att);
-                m.Body = $"Лист прайсов для вас, уважаемый {idClient}";
-
-                smtp.SendMailAsync(m);
-
-                m.Dispose();
-
+                    client.Disconnect(true);
+                }
+                if (Directory.Exists(path_price.PathDirectory))
+                {
+                    Directory.Delete(path_price.PathDirectory, true);
+                }
                 return true;
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 UniLogger.WriteLog("Ошибка при отправке почты ", 1, ex.Message);
-
                 return false;
             }
-        }
 
+        }
     }
 }

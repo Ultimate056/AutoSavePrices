@@ -24,6 +24,10 @@ namespace AutoSavePrices
             {
                 if (dataTable.Rows.Count < 1)
                 {
+                    if (Directory.Exists(path_price.PathDirectory))
+                    {
+                        Directory.Delete(path_price.PathDirectory);
+                    }
                     throw new Exception("Нет прайсов для отправки");
                 }
 
